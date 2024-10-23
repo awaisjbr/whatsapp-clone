@@ -1,0 +1,78 @@
+.dialogBox{
+    /* background: url(../assets//bg.jpg);
+    min-height: 100vh;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat; */
+    position: relative;
+}
+.loginBox{
+    /* position: absolute; */
+    top: 0;
+    right: 0;
+    border: 1px solid #cfbfbf;
+    padding: 15px;
+    border-radius: 8px;
+    width: 350px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1),
+                -5px -5px 5px rgba(0, 0, 0, 0.1);
+}
+.loginBox h3{
+    text-align: center;
+    margin-bottom: 12px;
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+.loginBox form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+.loginBox .inputBox input{
+    width: 250px;
+    margin: 18px 0;
+    outline: none;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: 1px solid #cfbfbf;
+}
+.loginBox .inputBox input[type=submit]{
+    cursor: pointer;
+    font-weight: 500;
+    background: rgb(6, 189, 161);
+    color: #fff;
+    transition: all 0.4s ease;
+}
+.loginBox .inputBox input[type=submit]:hover{
+    background: rgb(99, 201, 186);
+}
+.signin-google{
+    margin: auto;
+    background-color: red;
+    text-align: center;
+    width: fit-content;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: rgb(6, 189, 161);
+    background-color: #fff;
+    border: 1px solid #cfbfbf;
+    transition: all 0.4s ease;
+}
+.signin-google:hover{
+    color: #fff;
+    background-color: rgb(6, 189, 161);
+}
+.login-link{
+    width: fit-content;
+    margin: 15px auto;
+}
+.login-link a{
+    color: rgb(6, 189, 161);
+    font-weight: 500;
+    text-decoration: underline;
+    cursor: pointer;
+}
