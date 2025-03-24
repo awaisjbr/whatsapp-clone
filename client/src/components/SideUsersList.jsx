@@ -45,7 +45,7 @@ const SideUsersList = () => {
       <div className='p-5 flex items-center justify-between'>
         <p className='font-bold text-2xl'>Chats</p>
         <div className='flex items-center gap-5'>
-            <div className='text-2xl bg-[rgb(217,219,223)] rounded-full h-10 w-10 flex items-center justify-center cursor-pointer font-semibold text-[rgb(84,101,111)]'>{(userData.userName).slice(0,1).toUpperCase()}</div>
+            <div className='text-2xl bg-[rgb(217,219,223)] rounded-full h-10 w-10 flex items-center justify-center cursor-pointer font-semibold text-[rgb(84,101,111)]'>{userData.userName[0].toUpperCase()}</div>
             <div className='text-2xl cursor-pointer font-semibold text-[rgb(84,101,111)]' onClick={handleSignOut}><MdLogout /></div>
             <div className='text-2xl cursor-pointer font-semibold text-[rgb(84,101,111)]'><BsThreeDotsVertical /></div>
         </div>
