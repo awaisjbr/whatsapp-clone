@@ -1,27 +1,27 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FaForumbee } from "react-icons/fa6";
 import { LuEyeClosed } from "react-icons/lu";
 import { LuEyeOff } from "react-icons/lu";
 import { FcGoogle } from "react-icons/fc";
 import { NavLink, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { TailSpin } from "react-loader-spinner";
-import { toast } from 'react-toastify';
-import { AuthContext } from '../context/AuthContext';
-import { axiosInstance } from '../components/AxiosInstance';
+import { useAuthContext } from '../context/AuthContext';
 
 
 const Login = () => {
     const navigate = useNavigate();
-    const { setIsLoggedIn, getUserData,getAllUsers } = useContext(AuthContext);
+    const {signup, isEmailVerified, loading, login} = useAuthContext();
     const [loginState, setLoginState] = useState('Login');
-    const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
         userName: "",
         email: "",
         password: "",
     });
+
+    useEffect(() => {
+        if(!isEmailVerified) navigate("/verify-email")
+    },[isEmailVerified, navigate])
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -30,36 +30,12 @@ const Login = () => {
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true)
-        try {
-            if(loginState === "Login"){
-                const response = await axiosInstance.post("/auth/login",{...formData});
-                if(response.data.success){
-                    setIsLoggedIn(true);
-                    getUserData();
-                    getAllUsers();
-                    toast(response.data.message);
-                    navigate("/");
-                }else{
-                    toast.error(response.data.message)
-                }
-            }else{
-                const response = await axiosInstance.post("/auth/register",{...formData});
-                if(response.data.success){
-                    toast(response.data.message);
-                    navigate("/verify-email");
-                }else{
-                    toast.error(response.data.message)
-                }
-            }
-        } catch (error) {
-            toast.error(error.response.data.message)
-            
-        }finally{
-            setLoading(false)
+        if(loginState === "Login"){
+            login(formData)
+        }else{
+            signup(formData)
         }
     };
-
 
   return (
     <div className='bg-[url("./assets/login.jpg")] w-screen bg-center bg-cover h-screen relative flex items-center justify-center'>

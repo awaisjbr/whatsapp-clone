@@ -1,8 +1,8 @@
-import React, { lazy, Suspense, useContext } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { AuthContext } from "./context/AuthContext";
+import { useAuthContext } from "./context/AuthContext";
+import { loader } from "./components/Loading";
+import { Toaster } from "react-hot-toast";
 
 const Home = lazy(() => import("./pages/Home"));
 const Login = lazy(() => import("./pages/Login"));
@@ -11,25 +11,21 @@ const ForgotResetPassword = lazy(() => import("./pages/ForgotResetPassword"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 
 const App = () => {
+  const { isAuthenticated,checkAuth, isEmailVerified, user } = useAuthContext();
+  console.log(user)
   
-  const { isLoggedIn } = useContext(AuthContext);  
-
-  const ProtectedRoute =  ({children}) => {
-    return  isLoggedIn ? children : <Navigate to="/login" />;
-  }
-  const ProtectedRoute2 =  ({children}) => {
-    return  !isLoggedIn ?  children : <Navigate to="/" />;
-  }
-
+  useEffect(() => {
+      checkAuth()
+  },[]);
  
   return (
     <>
-      <ToastContainer theme="dark" />
-      <Suspense fallback={"Loading..."}>
+      <Suspense fallback={loader}>
+        <Toaster position="top-center" duration={5000} />
         <Routes>
-          <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-          <Route path="/login" element={<ProtectedRoute2><Login /></ProtectedRoute2>} />
-          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
+          <Route path="/login" element={isAuthenticated ?<Navigate to='/' /> :  <Login />} />
+          <Route path="/verify-email" element={isEmailVerified ? <Navigate to='/login' /> :<VerifyEmail />} />
           <Route path="/forgot-reset-password" element={<ForgotResetPassword />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>

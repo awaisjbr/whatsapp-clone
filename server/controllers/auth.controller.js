@@ -4,6 +4,18 @@ import jwt from "jsonwebtoken";
 import {transporter} from "../config/nodemail.js"
 import cookieParser from "cookie-parser";
 import cloudinary from "../config/cloudinary.js";
+import corn from "node-cron";
+
+corn.schedule("*/30 * * * *", async () => {
+    try {
+      const now = new Date();
+      const result = await userModel.deleteMany({ isVerified: false, verificationOtpExpiresAt: { $lt: now } });
+  
+      console.log(`Cron Job: Deleted ${result.deletedCount} unverified users at ${now}`);
+    } catch (error) {
+      console.error("Cron Job Error:", error.message);
+    }
+  });
 
 export const registerUser = async (req, res) => {
     const {userName, email, password} = req.body;
@@ -42,7 +54,7 @@ export const registerUser = async (req, res) => {
         maxAge: 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({success: true, message: "User register successfully, OTP sent to email"})
+    res.status(201).json({success: true, message: "User register successfully, OTP sent to email"})
    } catch (error) {
     res.status(500).json({success: false, message: error.message})
 }
@@ -90,16 +102,17 @@ export const loginUser = async (req, res) => {
             return res.status(500).json({success: false, message: "Wrong password"})
         }
 
-        const token = jwt.sign({userId:user._id}, process.env.SECRET_KEY, {expiresIn: "1h"});
+        const token = jwt.sign({userId:user._id}, process.env.SECRET_KEY, {expiresIn: "12h"});
         res.cookie("token", token,{
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
             maxAge: 24 * 60 * 60 * 1000,
         });
+        user.lastLoggedIn = Date.now();
         await user.save();
        
-        res.status(200).json({success: true, message: "user loggedIn successfully",user})
+        res.status(200).json({success: true, message: "user loggedIn successfully",user: {...user._doc, password:undefined}})
     } catch (error) {
         res.status(500).json({success: false, message: error.message})
     }

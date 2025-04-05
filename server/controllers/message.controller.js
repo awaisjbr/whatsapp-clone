@@ -1,6 +1,7 @@
 import { userModel } from "../models/user.model.js";
 import { messageModel } from "../models/message.model.js";
 import cloudinary from "../config/cloudinary.js";
+import { ConversationModel } from "../models/conversation.model.js";
 
 
 export const getMessages = async (req, res) => {
@@ -13,7 +14,8 @@ export const getMessages = async (req, res) => {
                 {senderId: myId, receiverId:userToChatId},
                 {senderId: userToChatId, receiverId:myId},
             ]
-        });
+        }).sort({createdAt : -1});
+        
         res.status(200).json({success: true, messages})
 
     } catch (error) {
@@ -33,8 +35,21 @@ export const sendMessage = async (req, res) => {
             imgUrl = uploadResponse.secure_url;
             console.log(uploadResponse)
         }
+        let conversation = await ConversationModel.findOne({
+            participants:{$all:[myId, receiverId]}
+        });
+        if(!conversation){
+            conversation = new ConversationModel({
+                participants:[myId, receiverId]
+            })
+        };
+
         const newMessage = new messageModel({receiverId, senderId:myId, text, image:imgUrl});
+        if(newMessage){
+            conversation.messages.push(newMessage._id)
+        }
         await newMessage.save();
+        await conversation.save();
 
         res.status(201).json({success: true, newMessage})
     } catch (error) {

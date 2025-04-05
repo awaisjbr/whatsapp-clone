@@ -1,51 +1,38 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdLogout } from "react-icons/md";
 import { IoSearch } from "react-icons/io5";
 import { FaUser } from "react-icons/fa6";
 import awaisimg from "../assets/chat-bg.jpg"
-import { AuthContext } from '../context/AuthContext';
-import { axiosInstance } from './AxiosInstance';
-import { toast } from 'react-toastify';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../context/AuthContext';
 
 
 const SideUsersList = () => {
-  const {userData, chatUsers, setIsLoggedIn, setSelectedUser} = useContext(AuthContext);
   const navigate = useNavigate();
+  const {logout, user} = useAuthContext();
 
   const handleSignOut = async () => {
-    try {
-      const result = confirm("Are you sure to logout")
-      if(result){
-        const res = await axiosInstance.post("/auth/logout");
-        toast.success(res.data.message);
-        setIsLoggedIn(false);
-        navigate("/login")
-      }else{
-        return
-      }
-    } catch (error) {
-      toast.error(error.response.data.message)
-    }
+    await logout();
   };
+
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if(e.key === "Escape"){
-        setSelectedUser(false)
+
       }
     }
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown)
-  })
+  },[])
 
   return (
     <div className='w-[450px] border border-gray-300 overflow-hidden flex flex-col'>
       <div className='p-5 flex items-center justify-between'>
         <p className='font-bold text-2xl'>Chats</p>
         <div className='flex items-center gap-5'>
-            <div className='text-2xl bg-[rgb(217,219,223)] rounded-full h-10 w-10 flex items-center justify-center cursor-pointer font-semibold text-[rgb(84,101,111)]'>{userData.userName[0].toUpperCase()}</div>
+            <div className='text-2xl bg-[rgb(217,219,223)] rounded-full h-10 w-10 flex items-center justify-center cursor-pointer font-semibold text-[rgb(84,101,111)]'><img src={user?.profilePic} alt="User Profile Pic" /></div>
             <div className='text-2xl cursor-pointer font-semibold text-[rgb(84,101,111)]' onClick={handleSignOut}><MdLogout /></div>
             <div className='text-2xl cursor-pointer font-semibold text-[rgb(84,101,111)]'><BsThreeDotsVertical /></div>
         </div>
@@ -65,13 +52,13 @@ const SideUsersList = () => {
       </div>
 
       {/* chat users box */}
-      <div className='flex flex-col overflow-y-auto flex-1 w-full'>
+      {/* <div className='flex flex-col overflow-y-auto flex-1 w-full'>
       {chatUsers.map((user, index) => {
           return (
-            <div key={index} className='flex flex-col justify-center cursor-pointer px-2 hover:bg-[#f0f2f5]' onClick={() => setSelectedUser(user)}>
+            <div key={index} className='flex flex-col justify-center cursor-pointer px-2 hover:bg-[#f0f2f5]' ref={lastMessageRef} onClick={() => setSelectedUser(user)}>
               <hr className='w-[85%] self-end' />
               <div className='flex items-center gap-3 py-2'>
-                  <div className='w-14 h-14 rounded-full bg-[rgb(223,229,231)] text-white flex items-end justify-center text-4xl overflow-hidden'><FaUser className='' /></div>
+                  <div className='w-14 h-14 rounded-full bg-[rgb(223,229,231)] text-white flex items-end justify-center text-4xl overflow-hidden'><img src={userData?.profilePic} alt="" /></div>
                   <div className='flex-1 flex flex-col'>
                       <p className='text-[rgb(17,27,33)] text-lg font-semibold'>{user.userName}</p>
                       <p className='text-sm text-[rgb(93,109,119)]'>Last Message</p>
@@ -81,7 +68,7 @@ const SideUsersList = () => {
             </div>
             )
         })}        
-      </div>
+      </div> */}
 
     </div>
   )

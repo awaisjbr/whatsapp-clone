@@ -1,5 +1,7 @@
 import React from "react";
 import { TailSpin } from "react-loader-spinner";
+import {Loader} from "lucide-react"
+
 
 const Loading = () => {
   return (
@@ -17,5 +19,11 @@ const Loading = () => {
           </div>
   );
 };
+
+export const loader = 
+    <div className="flex items-center justify-center h-screen">
+      <Loader className="size-10 animate-spin" />
+    </div>
+
 
 export default Loading;

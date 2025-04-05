@@ -17,7 +17,24 @@ const server = http.createServer(app);
 const io = new Server(server, {
     cors:{
         origin: ['http://localhost:3000'],
+        methods: ["GET","POST"]
     },
+})
+
+const onlineUsers = {};
+
+io.on("connection", (socket) => {
+    console.log("A User coneected", socket.id);
+    const userId = socket.handshake.query.userId;
+    if(userId) return onlineUsers[userId] = socket.id;
+
+    io.emit("getOnlineUsers", Object.keys(onlineUsers));
+
+    socket.on("disconnect", () => {
+        console.log("A User Disconnected", socket.id)
+        delete onlineUsers[userId];
+        io.emit("getOnlineUsers", Object.keys(onlineUsers));
+    })
 })
 
 //Middlewares
