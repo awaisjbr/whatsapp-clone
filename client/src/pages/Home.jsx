@@ -13,7 +13,7 @@ const Home = () => {
       <div className='w-full h-full flex'>
         <SideMenubar />
         <SideUsersList/>
-        {/* <ChatBox /> */}
+        <ChatBox />
       </div>      
     </div>
   )

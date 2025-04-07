@@ -14,7 +14,7 @@ export const getMessages = async (req, res) => {
                 {senderId: myId, receiverId:userToChatId},
                 {senderId: userToChatId, receiverId:myId},
             ]
-        }).sort({createdAt : -1});
+        }).sort({createdAt : 1});
         
         res.status(200).json({success: true, messages})
 
@@ -33,7 +33,6 @@ export const sendMessage = async (req, res) => {
         if(image){
             const uploadResponse = await cloudinary.uploader.upload(image);
             imgUrl = uploadResponse.secure_url;
-            console.log(uploadResponse)
         }
         let conversation = await ConversationModel.findOne({
             participants:{$all:[myId, receiverId]}

@@ -12,7 +12,7 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 
 const App = () => {
   const { isAuthenticated,checkAuth, isEmailVerified, user } = useAuthContext();
-  console.log(user)
+  // console.log(user)
   
   useEffect(() => {
       checkAuth()
@@ -21,7 +21,7 @@ const App = () => {
   return (
     <>
       <Suspense fallback={loader}>
-        <Toaster position="top-center" duration={5000} />
+        <Toaster position="top-center" duration={7000} />
         <Routes>
           <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
           <Route path="/login" element={isAuthenticated ?<Navigate to='/' /> :  <Login />} />

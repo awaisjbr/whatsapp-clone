@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaForumbee } from "react-icons/fa6";
 import { TailSpin } from "react-loader-spinner";
 import axios from "axios";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 
@@ -31,7 +31,7 @@ const ForgotPassword = () => {
     }
 
   return (
-    <div className='bg-[url("./assets/login.jpg")] bg-center bg-cover h-screen relative flex items-center justify-center'>
+    <div className='bg-[url("./assets/login.jpg")]  w-screen bg-center bg-cover h-screen relative flex items-center justify-center'>
       <div className="bg-white/30 backdrop-blur-sm max-w-[360px] w-full h-[50%] flex items-center flex-col py-5 justify-evenly">
         <h1 className="flex items-center gap-3 text-xl font-semibold">
           <FaForumbee />

@@ -37,6 +37,7 @@ export const registerUser = async (req, res) => {
     const verificationOtpExpiresAt = Date.now() + 10 * 60 * 1000   //OTP valid for 10 minutes
     const newUser = new userModel({userName, email, password:hasedPassword, verificationOTP,verificationOtpExpiresAt});
     const token = jwt.sign({userId: newUser._id}, process.env.SECRET_KEY, {expiresIn: "1h"})
+    newUser.profilePic = `https://avatar.iran.liara.run/public/boy?username=${newUser.userName}`
     await newUser.save();
 
     const mailOptions = {
@@ -228,7 +229,7 @@ export const updateProfilePic = async (req, res) => {
             { profilePic: uploadResponse.secure_url },
             { new: true }
           );
-        res.status(200).json({success: true, message: "Profile pic changed successfully."})
+        res.status(200).json({success: true, message: "Profile pic changed successfully.", updatedUser})
     } catch (error) {
         res.status(500).json({success: false, message: error.message})
     }

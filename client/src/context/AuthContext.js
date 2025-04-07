@@ -7,6 +7,9 @@ export const useAuthContext = create((set) => ({
   isAuthenticated: false,
   loading: false,
   isEmailVerified: true,
+  isforgotPassword: false,
+  isPasswordReseting: false,
+  onlineusers: [],
 
   checkAuth: async () => {
     try {
@@ -87,6 +90,14 @@ export const useAuthContext = create((set) => ({
         toast.error(error?.response?.data?.message || "Logout failed");
         set({loading: false})
     }
-  }
+  },
+
+  updateProfilePic: async (profilePic) => {
+    
+  },
+
+  forgotPassword: async () => {
+    set({isforgotPassword: true});
+  },
   
 }));
