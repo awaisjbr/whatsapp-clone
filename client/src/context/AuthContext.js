@@ -1,8 +1,9 @@
 import { axiosInstance } from "../components/AxiosInstance";
 import { create } from "zustand";
 import toast from "react-hot-toast";
+import { io } from "socket.io-client";
 
-export const useAuthContext = create((set) => ({
+export const useAuthContext = create((set, get) => ({
   user: null,
   isAuthenticated: false,
   loading: false,
@@ -10,12 +11,14 @@ export const useAuthContext = create((set) => ({
   isforgotPassword: false,
   isPasswordReseting: false,
   onlineusers: [],
+  socket: null,
 
   checkAuth: async () => {
     try {
       const { data } = await axiosInstance.get("/auth/checkAuth");
       if (data.success) {
         set({ user: data.user, isAuthenticated: true });
+        get().connectSocket();
       } else {
         set({ user: null, isAuthenticated: false });
       }
@@ -64,7 +67,8 @@ export const useAuthContext = create((set) => ({
         const {data} = await axiosInstance.post("/auth/login", credentials);
         if(data.success){
             set({isAuthenticated: true, loading:false, user: data.user});
-            toast.success(data.message)
+            toast.success(data.message);
+            get().connectSocket();
         }else{
             toast.error(data.message);
             set({ loading: false})
@@ -84,6 +88,7 @@ export const useAuthContext = create((set) => ({
           if(data.success){
             toast.success(data.message);
             set({isAuthenticated: false, user: null, loading: false})
+            get().disConnectSocket();
           }
         }
     } catch (error) {
@@ -99,5 +104,24 @@ export const useAuthContext = create((set) => ({
   forgotPassword: async () => {
     set({isforgotPassword: true});
   },
+
+  connectSocket: () => {
+    const {user} = get();
+    if(!user || get().socket?.connected) return;
+    const socket = io("http://localhost:4000",{
+      query: {
+        userId: user._id,
+      }
+    });
+    socket.connect();
+    set({socket});
+    socket.on("getOnlineUsers", (usersIds) => {
+      set({onlineusers: usersIds})
+    })
+  },
+
+  disConnectSocket: () => {
+    if(get().socket?.connected) get().socket.disconnect();
+  }
   
 }));

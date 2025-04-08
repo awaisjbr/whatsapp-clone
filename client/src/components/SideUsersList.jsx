@@ -13,13 +13,12 @@ import SideUsersLoadingSkeleton from './skeletons/SideUsersLoadingSkeleton';
 
 const SideUsersList = () => {
   const navigate = useNavigate();
-  const {logout, user} = useAuthContext();
+  const {logout, user, onlineusers} = useAuthContext();
   const {getUsers, chatUsers, selectedUser, setSelectedUser, loading} = useChatContext();
   const [updateProfilePic, setUpdateProfilePic] = useState(false);
   const handleSignOut = async () => {
     await logout();
   };
-
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -71,7 +70,7 @@ const SideUsersList = () => {
             <div key={index} className='flex flex-col justify-center cursor-pointer px-2 hover:bg-[#f0f2f5]' onClick={() => setSelectedUser(userToChat)}>
               <hr className='w-[85%] self-end' />
                 <div className='flex items-center gap-3 py-2'>
-                    <div className='w-14 h-14 rounded-full bg-[rgb(223,229,231)] text-white flex items-end justify-center text-4xl overflow-hidden'><img src={userToChat.profilePic || <FaUser />} alt="" /></div>
+                    <div className='w-14 h-14 rounded-full bg-[rgb(223,229,231)] text-white flex items-end justify-center text-4xl relative'><img src={userToChat.profilePic || <FaUser />} alt="" />{onlineusers.includes(userToChat?._id) && <span className='absolute top-0 right-2 w-2 h-2 rounded-full bg-green-500'></span>}</div>
                     <div className='flex-1 flex flex-col'>
                         <p className='text-[rgb(17,27,33)] text-lg font-semibold'>{userToChat.userName}</p>
                         <p className='text-sm text-[rgb(93,109,119)]'>Last Message</p>

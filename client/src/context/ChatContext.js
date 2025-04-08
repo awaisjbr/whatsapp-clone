@@ -1,6 +1,7 @@
 import { axiosInstance } from "../components/AxiosInstance";
 import { create } from "zustand";
 import toast from "react-hot-toast";
+import { useAuthContext } from "./AuthContext";
 
 export const useChatContext = create((set,get) => ({
     messages: [],
@@ -38,10 +39,16 @@ export const useChatContext = create((set,get) => ({
 
     sendMessage: async (messageData) => {
         const {selectedUser, messages} = get();
+        const socket = useAuthContext.getState().socket;
         try {
             const {data} = await axiosInstance.post(`/message/send/${selectedUser._id}`,messageData);
             if(data.success){
-                set({messages: [...messages, data.newMessage]})
+                set({messages: [...messages, data.newMessage]});
+                socket.on("newMessage", (newMessage) => {
+                    set({messages: [...messages, newMessage]})
+                })
+            }else{
+                toast.error(data.message)
             }
         } catch (error) {
             toast.error(error?.response?.data?.message);

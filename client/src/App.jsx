@@ -11,8 +11,8 @@ const ForgotResetPassword = lazy(() => import("./pages/ForgotResetPassword"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 
 const App = () => {
-  const { isAuthenticated,checkAuth, isEmailVerified, user } = useAuthContext();
-  // console.log(user)
+  const { isAuthenticated,checkAuth, isEmailVerified, user, onlineusers } = useAuthContext();
+  // console.log(onlineusers)
   
   useEffect(() => {
       checkAuth()

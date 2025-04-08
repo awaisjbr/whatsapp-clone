@@ -14,7 +14,7 @@ const port = process.env.PORT || 5000;
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
+export const io = new Server(server, {
     cors:{
         origin: ['http://localhost:3000'],
         methods: ["GET","POST"]
@@ -22,12 +22,15 @@ const io = new Server(server, {
 })
 
 const onlineUsers = {};
-
+export function getReceiverSocketId(userId){
+    return onlineUsers[userId]
+}
 io.on("connection", (socket) => {
     console.log("A User coneected", socket.id);
-    const userId = socket.handshake.query.userId;
-    if(userId) return onlineUsers[userId] = socket.id;
-
+   const userId = socket.handshake.query.userId;
+    if(userId){
+        onlineUsers[userId]= socket.id;
+    }
     io.emit("getOnlineUsers", Object.keys(onlineUsers));
 
     socket.on("disconnect", () => {
@@ -38,9 +41,10 @@ io.on("connection", (socket) => {
 })
 
 //Middlewares
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));
 app.use(cookieParser());
 app.use(cors({origin: 'http://localhost:3000', credentials:true}));
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 app.use("/api/auth", authRouter);
 app.use("/api/message", messageRouter);
 

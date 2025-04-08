@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState, useEffect } from 'react';
+import React from 'react';
 import chatboximg from "../assets/chat.jpg"
 import { useChatContext } from '../context/ChatContext';
 import ChatContainer from './ChatContainer';
